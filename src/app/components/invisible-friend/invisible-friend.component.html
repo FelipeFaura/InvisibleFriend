@@ -1,0 +1,20 @@
+<div class="container">
+    <h1 *ngIf="!isLogged">Primero de todo... ¿Quién eres? no te equivoques eh?</h1>
+    <button type="button" class="btn btn-primary login" *ngIf="!isLogged" (click)="selectLoginMember('Mamá')">Mamá</button>
+    <button type="button" class="btn btn-primary login" *ngIf="!isLogged" (click)="selectLoginMember('Papá')">Papá</button>
+    <button type="button" class="btn btn-primary login" *ngIf="!isLogged" (click)="selectLoginMember('Cristina')">Cristina</button>
+    <button type="button" class="btn btn-primary login" *ngIf="!isLogged" (click)="selectLoginMember('Verónica')">Verónica</button>
+    <button type="button" class="btn btn-primary login" *ngIf="!isLogged" (click)="selectLoginMember('Felipe')">Felipe</button>
+
+    <div *ngIf="isLogged">
+        <div class="result" *ngIf="isButtonClicked">
+            <img src="{{selectedPhoto}}" class="photo card-img-top" alt="...">
+            <h1 >{{selectedMember.name}}</h1>
+            <h1>¡Este es tu amigo invisible! No se lo digas a nadie.</h1>
+            <h1>El gasto maximo para el regalo será 50€</h1>
+            <h1>¡FELIZ NAVIDAD!</h1>
+            <h1>¡Importante: no repitas este enlace o le quitarías a otro su amigo invisible!</h1>
+        </div>
+        <button type="button" class="btn btn-primary" *ngIf="!isButtonClicked" (click)="choose()">Pulsa para obtener tu amigo invisible</button>
+    </div>
+</div>
