@@ -10,6 +10,16 @@ import { InvisibleFriendComponent } from './components/invisible-friend/invisibl
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatDialogModule} from '@angular/material/dialog';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { LoginComponent } from './components/login/login.component';
+import { MatSliderModule } from '@angular/material/slider';
+import {MatCardModule} from '@angular/material/card';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { ControlPanelComponent } from './components/control-panel/control-panel.component';
+
 
 
 
@@ -18,6 +28,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   declarations: [
     AppComponent,
     InvisibleFriendComponent,
+    LoginComponent,
+    ControlPanelComponent,
   ],
   imports: [
     BrowserModule,
@@ -26,7 +38,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     AngularFirestoreModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    NgbModule
+    NgbModule,
+    MatSliderModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

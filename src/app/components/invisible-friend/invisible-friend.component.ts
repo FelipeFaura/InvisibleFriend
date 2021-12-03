@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { zip } from 'rxjs';
 import { FamilyMember } from 'src/app/Models/familyMember';
 import { FamilyManagementService } from 'src/app/services/family-management.service';
 
@@ -11,23 +10,20 @@ import { FamilyManagementService } from 'src/app/services/family-management.serv
 })
 export class InvisibleFriendComponent implements OnInit {
   public dataBaseFamily: FamilyMember[]
-  public selectedMember: FamilyMember 
+  public selectedMember: FamilyMember
   public selectedPhoto: string
-  public isLogged = false
-  private memberLogged: string
-
+  public repitedQuery = false
   public isButtonClicked = false
-  constructor(private familyManagement: FamilyManagementService, public dialog: MatDialog){}
+  constructor(public familyManagement: FamilyManagementService, public dialog: MatDialog){}
 
   ngOnInit(): void {
     this.getDataFamilyMembers()
-
   }
 
 
   private getDataFamilyMembers() {
     this.dataBaseFamily = []
-    this.familyManagement.getFamilyMembers().subscribe((member) =>{
+    this.familyManagement.getFamilyMembers().subscribe((member) => {
       member.forEach((memberData: any) => {
         if (memberData.payload.doc.data().assigned === false) {
           this.dataBaseFamily.push(
@@ -36,15 +32,17 @@ export class InvisibleFriendComponent implements OnInit {
               memberData.payload.doc.data().name,
               memberData.payload.doc.data().assigned,
               memberData.payload.doc.data().picture,
+              memberData.payload.doc.data().code,
+              memberData.payload.doc.data().invisibleFriend,
             )
-          );
+          )
         }
-      });
+      })
     })
   }
 
   private getRandomMember(){
-    this.dataBaseFamily = this.dataBaseFamily.filter(x => x.name !== this.memberLogged)    
+    this.dataBaseFamily = this.dataBaseFamily.filter(x => x.name !== this.familyManagement.currentUser.name)
     this.selectedMember = this.dataBaseFamily[Math.floor(Math.random() * this.dataBaseFamily.length)]
   }
 
@@ -52,12 +50,17 @@ export class InvisibleFriendComponent implements OnInit {
     this.isButtonClicked = true
     this.getPhotoPath(this.selectedMember.name)
     this.familyManagement.updateAssigned(this.selectedMember.id)
+    this.familyManagement.updateInvisibleFriend(this.familyManagement.currentUser.id, this.selectedMember.name)
   }
 
-  public selectLoginMember(name: string){
-    this.memberLogged = name
-    this.getRandomMember()
-    this.isLogged = true
+  public selectInvisibleFriend(){
+    if (this.familyManagement.currentUser.invisibleFriend) {
+      this.repitedQuery = true
+      this.getPhotoPath(this.familyManagement.currentUser.invisibleFriend)
+    } else {
+      this.getRandomMember()
+      this.choose()
+    }
   }
 
   private getPhotoPath(name: string){
@@ -77,6 +80,6 @@ export class InvisibleFriendComponent implements OnInit {
       case "Felipe":
         this.selectedPhoto = "../../../assets/felipe.jpg"
         break;
-    } 
+    }
   }
 }

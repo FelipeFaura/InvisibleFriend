@@ -1,0 +1,15 @@
+<div class="container">
+  <mat-card class="card">
+    <mat-card-title class="centerText">Panel de control</mat-card-title>
+    <mat-card-content>
+      <div *ngFor="let item of familyManagement.dataBaseFamily">
+        <mat-card class="familyMember">
+          <mat-card-title [ngClass]="{'red':!item.invisibleFriend ,'green':item.invisibleFriend}" class="centerText">{{item.name}}</mat-card-title>
+        </mat-card>
+      </div>
+
+    </mat-card-content>
+    <button mat-raised-button color="primary" (click)="familyManagement.resetAllFamilyMembers()">Resetear todos los registros</button>
+  </mat-card>
+
+</div>

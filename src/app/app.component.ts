@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
+import { FamilyManagementService } from './services/family-management.service'
 
 @Component({
   selector: 'app-root',
@@ -6,11 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'InvisibleFriend';
+  title = 'InvisibleFriend'
 
-  
-  constructor(){
-    
+
+  constructor(public familyManagementService: FamilyManagementService){
+
   }
   ngOnInit() {
   }

@@ -1,2 +1,4 @@
-<app-invisible-friend></app-invisible-friend>
+<app-login *ngIf="!familyManagementService.currentUser"></app-login>
+<app-invisible-friend *ngIf="familyManagementService.currentUser"></app-invisible-friend>
+
 <router-outlet></router-outlet>

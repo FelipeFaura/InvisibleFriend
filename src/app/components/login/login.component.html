@@ -1,0 +1,19 @@
+<mat-card *ngIf="!controlPanel" class="loginCard">
+  <mat-card-title class="centerText">Bienvenido al amigo invisible</mat-card-title>
+  <mat-card-content>
+    <p>Introduce aquí tu numero secreto para loguearte</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <mat-form-field appearance="fill">
+      <mat-label>Contraseña</mat-label>
+      <input matInput [(ngModel)]="password" [type]="hidePassword ? 'password' : 'text'">
+      <button mat-icon-button matSuffix class="buttonHide" (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+        <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+  </mat-card-actions>
+    <button mat-raised-button color="primary" (click)="connect(password)">Entrar</button>
+    <p style="color: red; margin-top: 10px;" *ngIf="this.familyManagementService.statusConnection === 'WrongPassword'">Contraseña Incorrecta</p>
+    <p *ngIf="this.familyManagementService.statusConnection === 'UserConected'" >Hay otra persona eligiendo amigo invisible porfavor espera un momento y vuelve a intentarlo</p>
+</mat-card>
+<app-control-panel *ngIf="controlPanel"></app-control-panel>
