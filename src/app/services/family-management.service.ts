@@ -4,44 +4,71 @@ import { ConnectionStatus } from '../constants/constants'
 import { FamilyMember } from '../Models/familyMember'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FamilyManagementService {
   public dataBaseFamily: FamilyMember[]
   public currentUser: FamilyMember
   public statusConnection = ConnectionStatus.NONE
+  public isAppBusy = false
 
-  constructor(private firestore: AngularFirestore) { }
+  constructor(private firestore: AngularFirestore) {}
 
-  public getFamilyMembers(){
+  public getFamilyMembers() {
     return this.firestore.collection('family').snapshotChanges()
   }
 
-  public updateAssigned(id: string){
-    return this.firestore.collection('family')
-    .doc(id)
-    .set({assigned: true}, {merge: true})
+  private getUserConnection() {
+    return this.firestore.collection('userConnection').snapshotChanges()
   }
 
-  public updateInvisibleFriend(id: string, name: string){
-    return this.firestore.collection('family')
-    .doc(id)
-    .set({invisibleFriend: name}, {merge: true})
+  public updateAssigned(id: string) {
+    return this.firestore
+      .collection('family')
+      .doc(id)
+      .set({ assigned: true }, { merge: true })
   }
 
-  public resetAssigned(id: string){
-    return this.firestore.collection('family')
-    .doc(id)
-    .set({assigned: false, invisibleFriend: ""}, {merge: true})
+  public updateAppConnection(isConnected: boolean) {
+    return this.firestore
+      .collection('userConnection')
+      .doc('userConnection')
+      .set({ userConnected: isConnected }, { merge: true })
   }
 
-  public resetAllFamilyMembers(){
+  public updateInvisibleFriend(id: string, name: string) {
+    return this.firestore
+      .collection('family')
+      .doc(id)
+      .set({ invisibleFriend: name }, { merge: true })
+  }
+
+  public resetAssigned(id: string) {
+    return this.firestore
+      .collection('family')
+      .doc(id)
+      .set({ assigned: false, invisibleFriend: '' }, { merge: true })
+  }
+
+  public async resetAllFamilyMembers() {
+    await this.resetAssigned('0')
+    await this.resetAssigned('1')
+    await this.resetAssigned('2')
+    await this.resetAssigned('3')
+    await this.resetAssigned('4')
     this.dataBaseFamily = []
-    this.resetAssigned('0')
-    this.resetAssigned('1')
-    this.resetAssigned('2')
-    this.resetAssigned('3')
-    this.resetAssigned('4')
+  }
+
+  public checkDatabaseAvailable() {
+    this.getUserConnection().subscribe((member) => {
+      member.forEach((memberData: any) => {
+        if (memberData.payload.doc.data().userConnected === false) {
+          this.isAppBusy = false
+        } else {
+          this.isAppBusy = true
+        }
+      })
+    })
   }
 
   public getUser(userCode: string): void {
@@ -49,15 +76,14 @@ export class FamilyManagementService {
       let userFound: FamilyMember = null
       member.forEach((memberData: any) => {
         if (memberData.payload.doc.data().code === userCode) {
-          userFound = new FamilyMember
-            (
-              memberData.payload.doc.id,
-              memberData.payload.doc.data().name,
-              memberData.payload.doc.data().assigned,
-              memberData.payload.doc.data().picture,
-              memberData.payload.doc.data().code,
-              memberData.payload.doc.data().invisibleFriend,
-            )
+          userFound = new FamilyMember(
+            memberData.payload.doc.id,
+            memberData.payload.doc.data().name,
+            memberData.payload.doc.data().assigned,
+            memberData.payload.doc.data().picture,
+            memberData.payload.doc.data().code,
+            memberData.payload.doc.data().invisibleFriend
+          )
         }
       })
       userFound ? this.connectUser(userFound) : this.connectUser(null)
@@ -68,38 +94,39 @@ export class FamilyManagementService {
     this.dataBaseFamily = []
     this.getFamilyMembers().subscribe((member) => {
       member.forEach((memberData: any) => {
-          this.dataBaseFamily.push(
-            new FamilyMember(
-              memberData.payload.doc.id,
-              memberData.payload.doc.data().name,
-              memberData.payload.doc.data().assigned,
-              memberData.payload.doc.data().picture,
-              memberData.payload.doc.data().code,
-              memberData.payload.doc.data().invisibleFriend,
-            )
+        this.dataBaseFamily.push(
+          new FamilyMember(
+            memberData.payload.doc.id,
+            memberData.payload.doc.data().name,
+            memberData.payload.doc.data().assigned,
+            memberData.payload.doc.data().picture,
+            memberData.payload.doc.data().code,
+            memberData.payload.doc.data().invisibleFriend
           )
+        )
       })
     })
   }
 
-  public connectUser(user: FamilyMember): void{
-    if (user === null){
+  public connectUser(user: FamilyMember): void {
+    if (user === null) {
       this.changeStatus(ConnectionStatus.WRONG_PASSWORD)
       return
     }
-    if (this.currentUser){
+    if (this.isAppBusy) {
       this.changeStatus(ConnectionStatus.USER_CONECTED)
       return
     }
     this.currentUser = user
+    this.updateAppConnection(true)
     this.changeStatus(ConnectionStatus.CONNECTION_ESTABLISHED)
   }
 
-  public disconnectUser(): void{
+  public disconnectUser(): void {
     this.currentUser = null
   }
 
-  private changeStatus(status: ConnectionStatus): void{
+  private changeStatus(status: ConnectionStatus): void {
     this.statusConnection = status
   }
 }

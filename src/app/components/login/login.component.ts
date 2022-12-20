@@ -6,24 +6,22 @@ import { FamilyManagementService } from 'src/app/services/family-management.serv
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   public controlPanel = false
   public hidePassword = true
   public password: string
   public selectedMember: FamilyMember
-  public conectionStatusType: ConnectionStatus
-  constructor(public familyManagementService: FamilyManagementService) { }
+  constructor(public familyManagementService: FamilyManagementService) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  public async connect(password: string): Promise<void>{
+  public async connect(password: string): Promise<void> {
     if (password === '54328') {
       this.controlPanel = true
     }
+    this.familyManagementService.checkDatabaseAvailable()
     this.familyManagementService.getUser(password)
   }
-
 }
