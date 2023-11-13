@@ -1,0 +1,25 @@
+<div id="MyWhishListView" class="container" >
+<mat-card class="invisibleFriendCard">
+  <mat-card-title class="centerText">Mi lista de deseos</mat-card-title>
+  <mat-card-content>
+
+  <p class="invisibleFriendText centerText">Introduce aquí tu lista de deseos</p>
+  <div class="wishList">
+    <mat-card class="wishCard" *ngFor="let item of this.familyManagement.currentUser.wishList;let i = index">
+      <mat-card-content>
+        <input matInput type="text">
+        {{item}}
+        <button mat-icon-button (click)="deleteWish(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  </mat-card-content>
+  <button mat-icon-button (click)="openDialog()">
+    <mat-icon>add_circle_outline</mat-icon>
+  </button>
+</mat-card>
+
+</div>

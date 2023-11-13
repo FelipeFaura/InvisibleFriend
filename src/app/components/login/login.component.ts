@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core'
-import { ConnectionStatus } from 'src/app/constants/constants'
 import { FamilyMember } from 'src/app/Models/familyMember'
 import { FamilyManagementService } from 'src/app/services/family-management.service'
 
@@ -21,7 +20,7 @@ export class LoginComponent implements OnInit {
     if (password === '54328') {
       this.controlPanel = true
     }
-    this.familyManagementService.checkDatabaseAvailable()
+    // this.familyManagementService.checkDatabaseAvailable()
     this.familyManagementService.getUser(password)
   }
 }

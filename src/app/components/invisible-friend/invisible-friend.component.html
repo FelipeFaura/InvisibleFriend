@@ -1,14 +1,28 @@
-<div class="container">
-    <mat-card class="invisibleFriendCard">
-      <mat-card-title class="centerText">Hola! {{familyManagement.currentUser.name}}!</mat-card-title>
-      <mat-card-content>
-      <div *ngIf="!repitedQuery">
-        <div *ngIf="!isButtonClicked" class="centerText">
-          <h2>Aqui puedes obtener un amigo invisible aleatorio o consultar el que te tocó</h2>
-          <h2>El gasto máximo para el regalo será 50€</h2>
-          <h2>¡FELIZ NAVIDAD!</h2>
-        </div>
+<button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+  <mat-icon>menu</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <button (click)="changeView('InvisibleFriend')" mat-menu-item >
+    Amigo Invisible
+  </button>
+  <button (click)="changeView('MyWhishList')" mat-menu-item>
+    Mi lista de deseos
+  </button>
 
+</mat-menu>
+
+<div id="invisibleFriendView" class="container" *ngIf="this.currentView === 'InvisibleFriend'">
+    <mat-card class="invisibleFriendCard">
+      <mat-card-title class="centerText">Hola {{familyManagement.currentUser.name}}</mat-card-title>
+      <mat-card-content class ="test">
+        <button id="selectorButton" (click)="selectInvisibleFriend()" class="friendCircle centerText"  *ngIf="!this.familyManagement.currentUser.invisibleFriend">
+          <p>Pulsa para conocer tu amigo invisible</p>
+        </button>
+        <p class="invisibleFriendText centerText" *ngIf="this.familyManagement.currentUser.invisibleFriend">Tu amigo invisible es...</p>
+        <div class="friendCircle centerText" *ngIf="this.familyManagement.currentUser.invisibleFriend">
+          <img src="{{selectedPhoto}}" class="photo centerImage" alt="...">
+        </div>
+      <!-- <div *ngIf="!repitedQuery">
         <div *ngIf="isButtonClicked" class="centerText">
           <h2>Tu amigo Invisible es!</h2>
           <h1 >{{selectedMember.name}}</h1>
@@ -20,10 +34,24 @@
         <h2>Recuerda que tu amigo invisible es</h2>
         <h1 >{{this.familyManagement.currentUser.invisibleFriend}}</h1>
         <img class="centerImage" src="{{selectedPhoto}}" class="photo card-img-top" alt="...">
+      </div> -->
+
+      <p class="invisibleFriendText centerText" *ngIf="this.familyManagement.currentUser.invisibleFriend">Estos son los deseos de {{this.familyManagement.currentUser.invisibleFriend}}</p>
+      <div class="wishList">
+        <mat-card class="wishCard" *ngFor="let item of this.selectedMemberWishList">
+          <mat-card-content>
+            <p>{{item}}</p>
+          </mat-card-content>
+        </mat-card>
       </div>
 
+
+
+
       </mat-card-content>
-        <button (click)="selectInvisibleFriend()" *ngIf="!isButtonClicked && !repitedQuery" mat-raised-button color="primary" >Conseguir Amigo invisible</button>
+        <!-- <button (click)="selectInvisibleFriend()" *ngIf="!this.familyManagement.currentUser.invisibleFriend" mat-raised-button color="primary" >Conseguir Amigo invisible</button> -->
     </mat-card>
 
 </div>
+
+<app-wish-list *ngIf="this.currentView === 'MyWhishList'"></app-wish-list>

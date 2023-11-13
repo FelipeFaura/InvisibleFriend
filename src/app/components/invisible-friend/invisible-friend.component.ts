@@ -14,13 +14,29 @@ export class InvisibleFriendComponent implements OnInit {
   public selectedPhoto: string
   public repitedQuery = false
   public isButtonClicked = false
+  public selectedMemberWishList = []
+  public currentView = 'InvisibleFriend'
   constructor(
     public familyManagement: FamilyManagementService,
     public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    this.initialize()
+  }
+
+  private async initialize() {
     this.getDataFamilyMembers()
+    if (this.familyManagement.currentUser.invisibleFriend) {
+      // this.selectedMember = this.getMemberByName(
+      //   this.familyManagement.currentUser.invisibleFriend
+      // )
+      this.getPhotoPath(this.familyManagement.currentUser.invisibleFriend)
+      this.selectedMemberWishList =
+        this.familyManagement.getInvisibleFriendWishList(
+          this.familyManagement.currentUser.invisibleFriend
+        )
+    }
   }
 
   private getDataFamilyMembers() {
@@ -35,10 +51,22 @@ export class InvisibleFriendComponent implements OnInit {
               memberData.payload.doc.data().assigned,
               memberData.payload.doc.data().picture,
               memberData.payload.doc.data().code,
-              memberData.payload.doc.data().invisibleFriend
+              memberData.payload.doc.data().invisibleFriend,
+              memberData.payload.doc.data().wishList
             )
           )
         }
+        // if (memberData.payload.doc.data().assigned === true) {
+        //   this.selectedMember = new FamilyMember(
+        //     memberData.payload.doc.id,
+        //     memberData.payload.doc.data().name,
+        //     memberData.payload.doc.data().assigned,
+        //     memberData.payload.doc.data().picture,
+        //     memberData.payload.doc.data().code,
+        //     memberData.payload.doc.data().invisibleFriend,
+        //     memberData.payload.doc.data().wishList
+        //   )
+        // }
       })
     })
   }
@@ -63,15 +91,29 @@ export class InvisibleFriendComponent implements OnInit {
     )
   }
 
-  public selectInvisibleFriend() {
+  public async selectInvisibleFriend() {
     if (this.familyManagement.currentUser.invisibleFriend) {
       this.repitedQuery = true
       this.getPhotoPath(this.familyManagement.currentUser.invisibleFriend)
     } else {
+      const element = document.getElementById('selectorButton')
+      element.classList.add('animation')
+      const delay = (ms) => new Promise((res) => setTimeout(res, ms))
+      await delay(5000)
       this.getRandomMember()
       this.choose()
     }
     this.familyManagement.updateAppConnection(false)
+  }
+
+  public getInvisibleFriend() {
+    setTimeout(function () {
+      console.log('esperados 5 segundos')
+    }, 5000)
+  }
+
+  public changeView(viewName: string) {
+    this.currentView = viewName
   }
 
   private getPhotoPath(name: string) {

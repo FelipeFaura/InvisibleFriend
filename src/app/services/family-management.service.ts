@@ -12,7 +12,9 @@ export class FamilyManagementService {
   public statusConnection = ConnectionStatus.NONE
   public isAppBusy = false
 
-  constructor(private firestore: AngularFirestore) {}
+  constructor(private firestore: AngularFirestore) {
+    this.getAllFamilyMembersData()
+  }
 
   public getFamilyMembers() {
     return this.firestore.collection('family').snapshotChanges()
@@ -82,7 +84,8 @@ export class FamilyManagementService {
             memberData.payload.doc.data().assigned,
             memberData.payload.doc.data().picture,
             memberData.payload.doc.data().code,
-            memberData.payload.doc.data().invisibleFriend
+            memberData.payload.doc.data().invisibleFriend,
+            memberData.payload.doc.data().wishList
           )
         }
       })
@@ -101,11 +104,16 @@ export class FamilyManagementService {
             memberData.payload.doc.data().assigned,
             memberData.payload.doc.data().picture,
             memberData.payload.doc.data().code,
-            memberData.payload.doc.data().invisibleFriend
+            memberData.payload.doc.data().invisibleFriend,
+            memberData.payload.doc.data().wishList
           )
         )
       })
     })
+  }
+
+  public getInvisibleFriendWishList(name: string): string[] {
+    return this.dataBaseFamily.filter((x) => x.name === name)[0].wishList
   }
 
   public connectUser(user: FamilyMember): void {
@@ -118,15 +126,47 @@ export class FamilyManagementService {
       return
     }
     this.currentUser = user
-    this.updateAppConnection(true)
+    console.log(this.currentUser)
+    // this.updateAppConnection(true)
     this.changeStatus(ConnectionStatus.CONNECTION_ESTABLISHED)
   }
 
   public disconnectUser(): void {
     this.currentUser = null
+    // this.updateAppConnection(false)
   }
 
   private changeStatus(status: ConnectionStatus): void {
     this.statusConnection = status
+  }
+
+  // wishList Management
+  public getWishList() {}
+
+  public addWish(wish: string) {
+    const newArray = Object.assign([], this.currentUser.wishList)
+    newArray.push(wish)
+    return this.firestore
+      .collection('family')
+      .doc(this.currentUser.id)
+      .set({ wishList: newArray }, { merge: true })
+  }
+
+  public updateWish(index: number, wish: string) {
+    const newArray = Object.assign([], this.currentUser.wishList)
+    newArray[index] = wish
+    return this.firestore
+      .collection('family')
+      .doc(this.currentUser.id)
+      .set({ wishList: newArray }, { merge: true })
+  }
+
+  public deleteWish(index: number) {
+    const newArray = Object.assign([], this.currentUser.wishList)
+    newArray.splice(index, 1)
+    return this.firestore
+      .collection('family')
+      .doc(this.currentUser.id)
+      .set({ wishList: newArray }, { merge: true })
   }
 }
