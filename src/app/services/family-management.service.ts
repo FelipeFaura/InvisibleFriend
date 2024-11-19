@@ -45,19 +45,34 @@ export class FamilyManagementService {
       .set({ invisibleFriend: name }, { merge: true })
   }
 
-  public resetAssigned(id: string) {
+  public resetAssignedByID(id: string) {
     return this.firestore
       .collection('family')
       .doc(id)
       .set({ assigned: false, invisibleFriend: '' }, { merge: true })
   }
 
-  public async resetAllFamilyMembers() {
-    await this.resetAssigned('0')
-    await this.resetAssigned('1')
-    await this.resetAssigned('2')
-    await this.resetAssigned('3')
-    await this.resetAssigned('4')
+  public resetWishListByID(id: string) {
+    const newArray = []
+    return this.firestore
+      .collection('family')
+      .doc(id)
+      .set({ wishList: newArray }, { merge: true })
+  }
+
+  public async resetAllParameters() {
+    await this.resetWishListByID('0')
+    await this.resetWishListByID('1')
+    await this.resetWishListByID('2')
+    await this.resetWishListByID('3')
+    await this.resetWishListByID('4')
+
+    await this.resetAssignedByID('0')
+    await this.resetAssignedByID('1')
+    await this.resetAssignedByID('2')
+    await this.resetAssignedByID('3')
+    await this.resetAssignedByID('4')
+
     this.dataBaseFamily = []
   }
 

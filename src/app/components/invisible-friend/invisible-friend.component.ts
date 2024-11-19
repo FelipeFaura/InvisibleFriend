@@ -14,6 +14,7 @@ export class InvisibleFriendComponent implements OnInit {
   public selectedPhoto: string
   public repitedQuery = false
   public isButtonClicked = false
+  public buttonDisabled = false
   public selectedMemberWishList = []
   public currentView = 'InvisibleFriend'
   constructor(
@@ -96,8 +97,9 @@ export class InvisibleFriendComponent implements OnInit {
       this.repitedQuery = true
       this.getPhotoPath(this.familyManagement.currentUser.invisibleFriend)
     } else {
-      const element = document.getElementById('selectorButton')
-      element.classList.add('animation')
+      this.buttonDisabled = true
+      const button = document.getElementById('selectorButton')
+      button.classList.add('animation')
       const delay = (ms) => new Promise((res) => setTimeout(res, ms))
       await delay(5000)
       this.getRandomMember()

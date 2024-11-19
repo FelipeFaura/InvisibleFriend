@@ -15,8 +15,8 @@
     <mat-card class="invisibleFriendCard">
       <mat-card-title class="centerText">Hola {{familyManagement.currentUser.name}}</mat-card-title>
       <mat-card-content class ="test">
-        <button id="selectorButton" (click)="selectInvisibleFriend()" class="friendCircle centerText"  *ngIf="!this.familyManagement.currentUser.invisibleFriend">
-          <p>Pulsa para conocer tu amigo invisible</p>
+        <button [disabled]="buttonDisabled" id="selectorButton" (click)="selectInvisibleFriend()" class="friendCircle centerText"  *ngIf="!this.familyManagement.currentUser.invisibleFriend">
+          <p *ngIf="!buttonDisabled">Pulsa para conocer tu amigo invisible</p>
         </button>
         <p class="invisibleFriendText centerText" *ngIf="this.familyManagement.currentUser.invisibleFriend">Tu amigo invisible es...</p>
         <div class="friendCircle centerText" *ngIf="this.familyManagement.currentUser.invisibleFriend">
